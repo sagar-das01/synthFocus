@@ -1,0 +1,9 @@
+SynthFocus — AI-Powered Synthetic Focus Groups
+
+SynthFocus is a market research platform that replaces expensive, slow human focus groups with customizable AI agent swarms. Users define their own panel of personas — specifying names, roles, backgrounds, values, and communication styles — then submit a product concept and watch the agents debate it in real-time.
+
+The platform deploys a configurable swarm of AI agents: a Moderator that guides discussion, user-defined Persona agents that simulate target audience members, a Devil's Advocate that stress-tests ideas, and an Analyst that generates a structured market research report. Users control which system agents are active and how many personas participate, tailoring each session to their exact target demographic.
+
+Built with Python (FastAPI + LangGraph) on the backend and React (TypeScript + Tailwind) on the frontend, SynthFocus streams the multi-agent discussion to the browser via WebSocket in real-time. The LangGraph StateGraph uses cyclic execution — the Analyst evaluates topic coverage after each round and decides whether to loop for deeper discussion or generate the final report.
+
+A full focus group session completes in 3-5 minutes at a cost of ~$0.30 in LLM tokens, compared to $5,000-$15,000 and 4-8 weeks for traditional research.
