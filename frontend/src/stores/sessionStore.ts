@@ -5,6 +5,7 @@ interface SessionActions {
   setSessionId: (id: string) => void;
   setStatus: (status: SessionState["status"]) => void;
   addMessage: (message: AgentMessage) => void;
+  setMessages: (messages: AgentMessage[]) => void;
   setCurrentNode: (node: string | null) => void;
   setReport: (report: string) => void;
   setError: (error: string) => void;
@@ -38,6 +39,7 @@ export const useSessionStore = create<SessionState & SessionActions>((set) => ({
   setStatus: (status) => set({ status }),
   addMessage: (message) =>
     set((state) => ({ messages: [...state.messages, message] })),
+  setMessages: (messages) => set({ messages }),
   setCurrentNode: (node) => set({ currentNode: node }),
   setReport: (report) => set({ report, status: "complete" }),
   setError: (error) => set({ error, status: "error" }),
