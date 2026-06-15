@@ -17,6 +17,10 @@
     {
       "source": "/ws/:path*",
       "destination": "https://synthfocus-backend.onrender.com/ws/:path*"
+    },
+    {
+      "source": "/sessions",
+      "destination": "/index.html"
     }
   ]
 }

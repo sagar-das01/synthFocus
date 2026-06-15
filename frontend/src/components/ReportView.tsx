@@ -1,19 +1,14 @@
 import ReactMarkdown from "react-markdown";
 import { useSessionStore } from "../stores/sessionStore";
-import { downloadReportPdf } from "../utils/api";
+import { downloadReportAsPdf } from "../utils/api";
 
 export function ReportView() {
   const { report, sessionId } = useSessionStore();
 
   if (!report) return null;
 
-  const handleDownloadPdf = async () => {
-    if (!sessionId) return;
-    try {
-      await downloadReportPdf(sessionId);
-    } catch (e) {
-      alert("Failed to download PDF. Please try again.");
-    }
+  const handleDownloadPdf = () => {
+    downloadReportAsPdf(report, sessionId || "report");
   };
 
   return (
