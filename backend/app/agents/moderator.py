@@ -1,8 +1,11 @@
+import hashlib
+
 from langchain_core.messages import AIMessage, SystemMessage, HumanMessage
 
 from app.agents.prompts import MODERATOR_SYSTEM, MODERATOR_INTRO
 from app.agents.llm import get_llm
 from app.models.state import FocusGroupState
+from app.services.cache import make_cache_key, get_cached_response, set_cached_response
 
 
 async def moderator_node(state: FocusGroupState) -> dict:
@@ -27,9 +30,23 @@ async def moderator_node(state: FocusGroupState) -> dict:
             )
         )
 
-    response = await llm.ainvoke(messages)
+    # Cache the intro (round 0) for the same concept
+    cached_content = None
+    cache_key = None
+    if state["round_number"] == 0:
+        concept_hash = hashlib.sha256(state["concept"].strip().lower().encode()).hexdigest()[:16]
+        cache_key = make_cache_key(state["concept"], "Moderator", concept_hash)
+        cached_content = await get_cached_response(cache_key)
+
+    if cached_content:
+        content = cached_content
+    else:
+        response = await llm.ainvoke(messages)
+        content = response.content
+        if cache_key:
+            await set_cached_response(cache_key, content, ttl=14400)
 
     return {
-        "messages": [AIMessage(content=response.content, name="Moderator")],
+        "messages": [AIMessage(content=content, name="Moderator")],
         "round_number": state["round_number"] + 1,
     }

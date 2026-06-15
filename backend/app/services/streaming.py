@@ -8,6 +8,7 @@ from fastapi import WebSocket
 from app.agents.graph import create_focus_group_graph
 from app.models.state import FocusGroupState
 from app.services.session import session_store
+from app.services.message_store import message_store
 
 logger = logging.getLogger(__name__)
 
@@ -88,6 +89,13 @@ async def stream_focus_group(websocket: WebSocket, session_id: str) -> None:
                             "node": node_name,
                             "timestamp": datetime.now(timezone.utc).isoformat(),
                         })
+                        message_store.save_message(
+                            session_id=session_id,
+                            msg_type="agent_message",
+                            agent=agent_name,
+                            content=msg.content,
+                            node=node_name,
+                        )
 
                     if node_name == "analyst_report":
                         report = output.get("final_report", "")

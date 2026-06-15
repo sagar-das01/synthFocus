@@ -1,5 +1,6 @@
 import { useCallback, useRef } from "react";
 import { useSessionStore } from "../stores/sessionStore";
+import { supabase } from "../lib/supabase";
 
 export function useWebSocket() {
   const wsRef = useRef<WebSocket | null>(null);
@@ -7,16 +8,19 @@ export function useWebSocket() {
     useSessionStore();
 
   const connect = useCallback(
-    (sessionId: string) => {
+    async (sessionId: string) => {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token || "";
+
       const backendUrl = import.meta.env.VITE_BACKEND_URL || "";
       let wsUrl: string;
 
       if (backendUrl) {
         const wsBase = backendUrl.replace(/^http/, "ws");
-        wsUrl = `${wsBase}/ws/sessions/${sessionId}`;
+        wsUrl = `${wsBase}/ws/sessions/${sessionId}?token=${token}`;
       } else {
         const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-        wsUrl = `${protocol}//${window.location.host}/ws/sessions/${sessionId}`;
+        wsUrl = `${protocol}//${window.location.host}/ws/sessions/${sessionId}?token=${token}`;
       }
 
       const ws = new WebSocket(wsUrl);

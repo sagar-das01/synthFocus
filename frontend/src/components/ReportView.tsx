@@ -1,10 +1,20 @@
 import ReactMarkdown from "react-markdown";
 import { useSessionStore } from "../stores/sessionStore";
+import { downloadReportPdf } from "../utils/api";
 
 export function ReportView() {
-  const { report } = useSessionStore();
+  const { report, sessionId } = useSessionStore();
 
   if (!report) return null;
+
+  const handleDownloadPdf = async () => {
+    if (!sessionId) return;
+    try {
+      await downloadReportPdf(sessionId);
+    } catch (e) {
+      alert("Failed to download PDF. Please try again.");
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -31,6 +41,12 @@ export function ReportView() {
             className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
           >
             Copy Report
+          </button>
+          <button
+            onClick={handleDownloadPdf}
+            className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          >
+            Download PDF
           </button>
           <button
             onClick={() => useSessionStore.getState().reset()}

@@ -1,8 +1,12 @@
+import hashlib
+import json
+
 from langchain_core.messages import AIMessage, SystemMessage, HumanMessage
 
 from app.agents.prompts import PERSONA_SYSTEM
 from app.agents.llm import get_llm
 from app.models.state import FocusGroupState
+from app.services.cache import make_cache_key, get_cached_response, set_cached_response
 
 
 def build_persona_prompt(persona: dict) -> str:
@@ -41,9 +45,24 @@ async def persona_round_node(state: FocusGroupState) -> dict:
             )
         )
 
-        response = await llm.ainvoke(conversation)
-        new_messages.append(
-            AIMessage(content=response.content, name=persona["name"])
-        )
+        # Check cache for round 1 responses
+        cached_content = None
+        cache_key = None
+        if state["round_number"] == 1:
+            context_hash = hashlib.sha256(
+                json.dumps([m.content for m in recent_messages[-3:]], default=str).encode()
+            ).hexdigest()[:16]
+            cache_key = make_cache_key(state["concept"], persona["name"], context_hash)
+            cached_content = await get_cached_response(cache_key)
+
+        if cached_content:
+            new_messages.append(AIMessage(content=cached_content, name=persona["name"]))
+        else:
+            response = await llm.ainvoke(conversation)
+            new_messages.append(
+                AIMessage(content=response.content, name=persona["name"])
+            )
+            if cache_key:
+                await set_cached_response(cache_key, response.content, ttl=7200)
 
     return {"messages": new_messages}

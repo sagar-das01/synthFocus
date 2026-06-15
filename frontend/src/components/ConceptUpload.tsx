@@ -3,6 +3,7 @@ import { useSessionStore } from "../stores/sessionStore";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { createSession } from "../utils/api";
 import { PersonaConfig } from "../types";
+import { SessionHistory } from "./SessionHistory";
 
 const EMPTY_PERSONA: PersonaConfig = {
   name: "",
@@ -17,6 +18,7 @@ export function ConceptUpload() {
   const [concept, setConcept] = useState("");
   const [maxRounds, setMaxRounds] = useState(5);
   const [showPersonaBuilder, setShowPersonaBuilder] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [editingPersona, setEditingPersona] = useState<PersonaConfig>(EMPTY_PERSONA);
   const [valuesInput, setValuesInput] = useState("");
   const [painPointsInput, setPainPointsInput] = useState("");
@@ -71,7 +73,7 @@ export function ConceptUpload() {
         max_rounds: maxRounds,
       });
       setSessionId(session.session_id);
-      connect(session.session_id);
+      await connect(session.session_id);
     } catch {
       setStatus("error");
     }
@@ -85,7 +87,25 @@ export function ConceptUpload() {
           AI-powered synthetic focus groups. Configure your agent panel and get
           instant market feedback.
         </p>
+        <button
+          type="button"
+          onClick={() => setShowHistory(true)}
+          className="mt-3 text-sm text-indigo-600 hover:text-indigo-800 underline"
+        >
+          View Past Sessions
+        </button>
       </div>
+
+      {showHistory && (
+        <SessionHistory
+          onSelect={(id) => {
+            setShowHistory(false);
+            setSessionId(id);
+            setStatus("complete");
+          }}
+          onClose={() => setShowHistory(false)}
+        />
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Product Concept */}
