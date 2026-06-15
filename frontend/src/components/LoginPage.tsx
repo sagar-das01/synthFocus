@@ -100,6 +100,28 @@ export function LoginPage() {
             </button>
           </form>
 
+          {!isSignUp && (
+            <div className="mt-4">
+              <button
+                type="button"
+                disabled={loading}
+                onClick={async () => {
+                  setLoading(true);
+                  try {
+                    await signIn("admin@synthfocus.app", "admin123");
+                  } catch {
+                    // error set in store
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                className="w-full py-2 px-4 border border-indigo-300 text-indigo-700 font-medium rounded-lg hover:bg-indigo-50 transition-colors disabled:opacity-50"
+              >
+                Sign in as Admin
+              </button>
+            </div>
+          )}
+
           <div className="mt-4 text-center">
             <button
               onClick={() => {
