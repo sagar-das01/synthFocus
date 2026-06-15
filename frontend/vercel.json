@@ -2,14 +2,21 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "redirects": [
+    {
+      "source": "/demo",
+      "destination": "https://www.youtube.com/watch?v=YOUR_VIDEO_ID",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://YOUR_BACKEND_URL/api/:path*"
+      "destination": "https://synthfocus-backend.onrender.com/api/:path*"
     },
     {
       "source": "/ws/:path*",
-      "destination": "https://YOUR_BACKEND_URL/ws/:path*"
+      "destination": "https://synthfocus-backend.onrender.com/ws/:path*"
     }
   ]
 }

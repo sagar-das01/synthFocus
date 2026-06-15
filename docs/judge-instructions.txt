@@ -1,0 +1,56 @@
+SynthFocus — Judge Access Instructions
+=======================================
+
+Prerequisites:
+- A modern browser (Chrome, Firefox, Safari, Edge)
+- No installation required
+
+Steps to Explore:
+-----------------
+
+1. Open the application URL provided after deployment in your browser.
+
+2. You will see the SynthFocus landing page with a product concept input form.
+
+3. Configure your focus group:
+   a. Paste any product concept into the text area (e.g. "A fitness app that uses AI to generate personalized workout plans for $9.99/month").
+   b. Under "System Agents", toggle Moderator / Devil's Advocate / Analyst on or off as desired.
+   c. Click "+ Add Custom Personas" to define your own agent roles:
+      - Enter a name (e.g. "Sarah")
+      - Enter a role (e.g. "Healthcare Professional")
+      - Optionally add background, values, pain points, and communication style
+      - Click "Add Persona to Group"
+      - Repeat to add as many personas as you want
+   d. If you skip adding custom personas, the system uses 5 diverse defaults.
+   e. Adjust the "Discussion Rounds" slider (2 = quick feedback, 8 = deep analysis).
+
+4. Click "Start Focus Group" to begin the session.
+
+5. Watch the live discussion:
+   - Messages appear in real-time, color-coded by agent
+   - The right sidebar shows which agent is currently speaking
+   - The Moderator asks questions, personas respond in character, Devil's Advocate challenges claims
+
+6. When the discussion completes, the Analyst report appears as a modal overlay with:
+   - Executive Summary
+   - Key Findings
+   - Sentiment Analysis
+   - Friction Points
+   - Actionable Recommendations
+
+7. Click "Copy Report" to copy the full report as markdown, or "Start Over" to run another session.
+
+Tips for Evaluation:
+--------------------
+- Try different persona configurations to see how agent composition affects feedback quality.
+- Toggle off the Devil's Advocate to see how discussion changes without pushback.
+- Toggle off the Analyst to see the raw discussion without a summary report.
+- Try the same concept with different persona roles to compare perspectives.
+- Use 2 rounds for a quick test, or 5+ rounds for thorough topic coverage.
+
+Technical Notes:
+----------------
+- The backend uses LangGraph for multi-agent orchestration with cyclic graph execution.
+- All agent communication streams via WebSocket in real-time.
+- The graph topology adapts dynamically based on which system agents are enabled.
+- No data is persisted between sessions (in-memory store for the MVP).
